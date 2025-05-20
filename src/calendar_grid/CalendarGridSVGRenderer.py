@@ -104,7 +104,7 @@ class CalendarGridSVGRenderer:
             [
                 _(
                     "text",
-                    text,
+                    text.lower(),
                     dict(
                         x=x,
                         y=y,
@@ -269,7 +269,7 @@ class CalendarGridSVGRenderer:
                 height=1080,
                 viewBox="0 0 100 100",
                 preserveAspectRatio="none",
-                font_family="Consolas",
+                font_family="Ubuntu Mono",
             ),
         )
 
