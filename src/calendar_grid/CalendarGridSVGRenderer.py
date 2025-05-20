@@ -42,7 +42,10 @@ class CalendarGridSVGRenderer:
             + i_col * self.cell_unit.seconds
         )
 
-        if time_cell.ut < self.time_start.ut or time_cell.ut > self.time_end.ut:
+        if (
+            time_cell.ut < self.time_start.ut
+            or time_cell.ut > self.time_end.ut
+        ):
             return None
 
         FONT_SIZE_FACTOR = 10

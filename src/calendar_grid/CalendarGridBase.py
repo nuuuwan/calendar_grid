@@ -1,7 +1,7 @@
 import math
 from dataclasses import dataclass
 
-from utils import Log, Time, TimeDelta, TimeUnit, TimeZoneOffset, TimeFormat
+from utils import Log, Time, TimeDelta, TimeFormat, TimeUnit, TimeZoneOffset
 
 log = Log("CalendarGrid")
 
@@ -34,7 +34,9 @@ class CalendarGridBase:
     @property
     def time_end_table(self) -> Time:
         return Time(
-            math.ceil((self.time_end.ut - self.offset) / self.row_unit.seconds)
+            math.ceil(
+                (self.time_end.ut - self.offset) / self.row_unit.seconds
+            )
             * self.row_unit.seconds
             + self.offset,
         )
