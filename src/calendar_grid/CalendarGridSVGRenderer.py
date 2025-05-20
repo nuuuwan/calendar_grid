@@ -36,6 +36,14 @@ class CalendarGridSVGRenderer:
 
         x = (i_col + 1) * self.cell_width
         y = (i_row + 1) * self.cell_height
+        time_cell = Time(
+            self.time_start_table.ut
+            + i_row * self.row_unit.seconds
+            + i_col * self.cell_unit.seconds
+        )
+
+        if time_cell.ut < self.time_start.ut or time_cell.ut > self.time_end.ut:
+            return None
 
         FONT_SIZE_FACTOR = 10
 
@@ -57,13 +65,7 @@ class CalendarGridSVGRenderer:
                 ),
                 _(
                     "text",
-                    self.time_format_cell.format(
-                        Time(
-                            self.time_start_table.ut
-                            + i_row * self.row_unit.seconds
-                            + i_col * self.cell_unit.seconds
-                        )
-                    ),
+                    self.time_format_cell.format(time_cell),
                     dict(
                         x=x + cell_width / FONT_SIZE_FACTOR,
                         y=y + cell_height / FONT_SIZE_FACTOR,
