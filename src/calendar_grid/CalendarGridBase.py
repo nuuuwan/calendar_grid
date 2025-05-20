@@ -67,7 +67,7 @@ class CalendarGridBase:
         if self.cell_unit.seconds < TimeUnit.DAY.seconds:
             return TimeFormat("%a %d")
         if self.row_unit == TimeUnit.WEEK:
-            return TimeFormat("w%W")
+            return TimeFormat("week %W")
         return TimeFormat.TIME_ID
 
     @property
