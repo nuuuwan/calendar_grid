@@ -49,16 +49,23 @@ class CalendarGridBase:
 
     @property
     def time_format_title(self) -> TimeFormat:
-        return TimeFormat("%Y-%m-%d")
+        if self.time_delta_table.dut > TimeUnit.SECONDS_IN.WEEK:
+            return TimeFormat("%Y %b")
+        if self.time_delta_table.dut > TimeUnit.SECONDS_IN.DAY:
+            return TimeFormat("%Y-%m-%d")
 
     @property
     def time_format_row_header(self) -> TimeFormat:
         if self.row_unit == TimeUnit.DAY:
             return TimeFormat("%a-%d")
+        if self.row_unit == TimeUnit.WEEK:
+            return TimeFormat("w%W")
         return TimeFormat.TIME_ID
 
     @property
     def time_format_col_header(self) -> TimeFormat:
-        if self.cell_unit == TimeUnit.HOUR:
+        if self.cell_unit in [TimeUnit.HOUR, TimeUnit.HOUR * 2]:
             return TimeFormat("%H")
+        if self.cell_unit == TimeUnit.DAY:
+            return TimeFormat("%a")
         return TimeFormat.TIME_ID

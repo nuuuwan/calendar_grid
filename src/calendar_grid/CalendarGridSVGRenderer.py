@@ -154,10 +154,15 @@ class CalendarGridSVGRenderer:
 
     @property
     def title(self):
+        s_start = self.time_format_title.format(self.time_start)
+        s_end = self.time_format_title.format(self.time_end)
+        if s_start == s_end:
+            return s_start
+
         return " to ".join(
             [
-                self.time_format_title.format(self.time_start),
-                self.time_format_title.format(self.time_end),
+                s_start,
+                s_end,
             ]
         )
 
@@ -169,7 +174,7 @@ class CalendarGridSVGRenderer:
             dict(
                 x=50,
                 y=5,
-                font_size=100 / len(self.title),
+                font_size=100 / max(20, len(self.title)),
                 text_anchor="middle",
                 dominant_baseline="middle",
                 fill="#000",
