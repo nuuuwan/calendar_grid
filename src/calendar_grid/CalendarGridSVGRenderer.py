@@ -1,11 +1,13 @@
 import os
 
-from utils import Log, TimeFormat, _
+from utils import Log, TimeFormat, _, Time
 
 log = Log("CalendarGridSVGRenderer")
 
 
 class CalendarGridSVGRenderer:
+    PADDING = 10
+
     @property
     def svg_file_path(self):
         return os.path.join(
@@ -22,8 +24,19 @@ class CalendarGridSVGRenderer:
             ),
         )
 
-    @staticmethod
-    def render_table_cell(x, y, cell_width, cell_height):
+    @property
+    def cell_width(self):
+        return 100 / (self.n_cols + 2)
+
+    @property
+    def cell_height(self):
+        return 100 / (self.n_rows + 2)
+
+    def render_table_cell(self, i_col, i_row, cell_width, cell_height):
+
+        x = (i_col + 1) * self.cell_width
+        y = (i_row + 1) * self.cell_height
+
         return _(
             "rect",
             None,
@@ -38,32 +51,89 @@ class CalendarGridSVGRenderer:
             ),
         )
 
+    def render_header_cell(self, x, y, text):
+        return _(
+            "text",
+            text,
+            dict(
+                x=x,
+                y=y,
+                font_size=2,
+                text_anchor="middle",
+                dominant_baseline="middle",
+                fill="#000",
+            ),
+        )
+
     @property
-    def svg_inner_table(self):
-        g = []
-        cell_width = 100 / self.n_cols
-        cell_height = 100 / self.n_rows
-        for i_row in range(self.n_rows):
-            for i_col in range(self.n_cols):
-                x = i_col * cell_width
-                y = i_row * cell_height
-                g.append(
-                    self.render_table_cell(
-                        x,
-                        y,
-                        cell_width,
-                        cell_height,
+    def svg_row_headers(self):
+        inner = []
+        for offset_x in [0, self.n_cols + 1]:
+            for i_row in range(self.n_rows):
+                inner.append(
+                    self.render_header_cell(
+                        (offset_x + 0.5) * self.cell_width,
+                        (i_row + 1 + 0.5) * self.cell_height,
+                        self.time_format_row_header.format(
+                            Time(
+                                self.time_start_table.ut
+                                + i_row * self.row_unit.seconds
+                            )
+                        ),
                     )
                 )
-        PADDING = 10
+
+        return _(
+            "g",
+            inner,
+        )
+
+    @property
+    def svg_col_headers(self):
+        inner = []
+        for offset_y in [0, self.n_rows + 1]:
+            for i_col in range(self.n_cols):
+                inner.append(
+                    self.render_header_cell(
+                        (i_col + 1 + 0.5) * self.cell_width,
+                        (offset_y + +0.5) * self.cell_height,
+                        self.time_format_col_header.format(
+                            Time(
+                                self.time_start_table.ut
+                                + i_col * self.cell_unit.seconds
+                            )
+                        ),
+                    )
+                )
+
+        return _(
+            "g",
+            inner,
+        )
+
+    @property
+    def svg_inner_table(self):
+        inner = []
+        for i_row in range(self.n_rows):
+            for i_col in range(self.n_cols):
+
+                inner.append(
+                    self.render_table_cell(
+                        i_col,
+                        i_row,
+                        self.cell_width,
+                        self.cell_height,
+                    )
+                )
+
         return _(
             "svg",
-            g,
+            inner + [self.svg_row_headers, self.svg_col_headers],
             dict(
-                x=PADDING,
-                y=PADDING,
-                width=100 - PADDING * 2,
-                height=100 - PADDING * 2,
+                x=self.PADDING,
+                y=self.PADDING,
+                width=100 - self.PADDING * 2,
+                height=100 - self.PADDING * 2,
                 viewBox="0 0 100 100",
             ),
         )
@@ -86,8 +156,8 @@ class CalendarGridSVGRenderer:
     def title(self):
         return " to ".join(
             [
-                TimeFormat.TIME.format(self.time_start),
-                TimeFormat.TIME.format(self.time_end),
+                self.time_format_title.format(self.time_start),
+                self.time_format_title.format(self.time_end),
             ]
         )
 
@@ -111,9 +181,9 @@ class CalendarGridSVGRenderer:
         return _(
             "svg",
             [
+                self.svg_rect_border,
                 self.svg_inner_table,
                 self.svg_title,
-                self.svg_rect_border,
             ],
             dict(
                 width=1440,
