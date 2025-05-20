@@ -13,7 +13,7 @@ TEST_CG_WEEK = CalendarGrid(
 )
 
 TEST_CG_MONTH = CalendarGrid(
-    time_start=TimeFormat.DATE.parse("2025-05-01"),
+    time_start=TimeFormat.DATE.parse("2025-06-01"),
     row_unit=TimeUnit.WEEK,
     n_rows=5,
     cell_unit=TimeUnit.DAY,

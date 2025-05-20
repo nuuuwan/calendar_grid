@@ -14,13 +14,21 @@ class CalendarGridBase:
     cell_unit: TimeUnit
 
     @property
+    def offset(self):
+        if self.row_unit == TimeUnit.DAY:
+            return TimeZoneOffset.LK
+        if self.row_unit == TimeUnit.WEEK:
+            return TimeZoneOffset.LK + TimeUnit.SECONDS_IN.DAY * 4
+        raise ValueError(f"Invalid row unit {self.row_unit}.")
+
+    @property
     def time_start_table(self) -> Time:
         return Time(
             math.floor(
-                (self.time_start.ut - TimeZoneOffset.LK) / self.row_unit.seconds
+                (self.time_start.ut - self.offset) / self.row_unit.seconds
             )
             * self.row_unit.seconds
-            + TimeZoneOffset.LK,
+            + self.offset,
         )
 
     @property
