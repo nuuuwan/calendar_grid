@@ -89,10 +89,8 @@ class Holidays:
 
     @staticmethod
     def idx():
-        return {
-            TimeFormat.DATE.format(h.date): h.name for h in Holidays.list()
-        }
+        return {TimeFormat.DATE.format(h.date): h for h in Holidays.list()}
 
     @staticmethod
-    def get_holiday(date: Time) -> str:
-        return Holidays.idx().get(TimeFormat.DATE.format(date), None)
+    def get_holiday(t: Time) -> str:
+        return Holidays.idx().get(TimeFormat.DATE.format(t), None)

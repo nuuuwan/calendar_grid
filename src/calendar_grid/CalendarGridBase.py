@@ -34,9 +34,7 @@ class CalendarGridBase:
     @property
     def time_end_table(self) -> Time:
         return Time(
-            math.ceil(
-                (self.time_end.ut - self.offset) / self.row_unit.seconds
-            )
+            math.ceil((self.time_end.ut - self.offset) / self.row_unit.seconds)
             * self.row_unit.seconds
             + self.offset,
         )
@@ -87,3 +85,7 @@ class CalendarGridBase:
         if self.cell_unit == TimeUnit.DAY:
             return TimeFormat("%d")
         return TimeFormat.TIME_ID
+
+    @property
+    def show_holiday_in_cell(self) -> bool:
+        return self.cell_unit.seconds >= TimeUnit.SECONDS_IN.DAY

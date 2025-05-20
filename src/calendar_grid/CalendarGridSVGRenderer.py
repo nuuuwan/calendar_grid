@@ -74,6 +74,53 @@ class CalendarGridSVGRenderer:
                         x=x + cell_width / FONT_SIZE_FACTOR,
                         y=y + cell_height / FONT_SIZE_FACTOR,
                         font_size=cell_width / FONT_SIZE_FACTOR,
+                        text_anchor="start",
+                        dominant_baseline="middle",
+                        fill="#000",
+                    ),
+                ),
+                _(
+                    "text",
+                    (
+                        holiday.name
+                        if (holiday and self.show_holiday_in_cell)
+                        else ""
+                    ),
+                    dict(
+                        x=x + cell_width / FONT_SIZE_FACTOR,
+                        y=y + cell_height * (1 - 1 / FONT_SIZE_FACTOR),
+                        font_size=1,
+                        text_anchor="start",
+                        dominant_baseline="middle",
+                        fill="#000",
+                    ),
+                ),
+            ],
+        )
+
+    def render_header_cell(self, x, y, text, text_holiday):
+        return _(
+            "g",
+            [
+                _(
+                    "text",
+                    text,
+                    dict(
+                        x=x,
+                        y=y,
+                        font_size=10 / max(5, len(text)),
+                        text_anchor="middle",
+                        dominant_baseline="middle",
+                        fill="#000",
+                    ),
+                ),
+                _(
+                    "text",
+                    text_holiday,
+                    dict(
+                        x=x,
+                        y=y + self.cell_height / 4,
+                        font_size=10 / max(5, len(text_holiday)),
                         text_anchor="middle",
                         dominant_baseline="middle",
                         fill="#000",
@@ -82,35 +129,28 @@ class CalendarGridSVGRenderer:
             ],
         )
 
-    def render_header_cell(self, x, y, text):
-        return _(
-            "text",
-            text,
-            dict(
-                x=x,
-                y=y,
-                font_size=10 / max(5, len(text)),
-                text_anchor="middle",
-                dominant_baseline="middle",
-                fill="#000",
-            ),
-        )
-
     @property
     def svg_row_headers(self):
         inner = []
+
         for offset_x in [0, self.n_cols + 1]:
             for i_row in range(self.n_rows):
+                time_row = Time(
+                    self.time_start_table.ut + i_row * self.row_unit.seconds
+                )
+                str_time = self.time_format_row_header.format(time_row)
+                holiday = Holidays.get_holiday(time_row)
+                str_holiday = (
+                    holiday.name
+                    if holiday and not self.show_holiday_in_cell
+                    else ""
+                )
                 inner.append(
                     self.render_header_cell(
                         (offset_x + 0.5) * self.cell_width,
                         (i_row + 1 + 0.5) * self.cell_height,
-                        self.time_format_row_header.format(
-                            Time(
-                                self.time_start_table.ut
-                                + i_row * self.row_unit.seconds
-                            )
-                        ),
+                        str_time,
+                        str_holiday,
                     )
                 )
 
@@ -134,6 +174,7 @@ class CalendarGridSVGRenderer:
                                 + i_col * self.cell_unit.seconds
                             )
                         ),
+                        "",
                     )
                 )
 
