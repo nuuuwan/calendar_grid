@@ -200,7 +200,7 @@ class CalendarGridSVGRenderer:
             self.title,
             dict(
                 x=50,
-                y=5,
+                y=self.PADDING,
                 font_size=100 / max(20, len(self.title)),
                 text_anchor="middle",
                 dominant_baseline="middle",
