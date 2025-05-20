@@ -46,7 +46,11 @@ class CalendarGridSVGRenderer:
         if time_cell.ut < self.time_start.ut or time_cell.ut > self.time_end.ut:
             return None
 
-        holiday = Holidays.get_holiday(time_cell)
+        holiday = (
+            Holidays.get_holiday(time_cell)
+            if self.show_holiday_in_cell
+            else None
+        )
         fill = "none" if holiday is None else "#eee8"
 
         FONT_SIZE_FACTOR = 10
@@ -81,11 +85,7 @@ class CalendarGridSVGRenderer:
                 ),
                 _(
                     "text",
-                    (
-                        holiday.name
-                        if (holiday and self.show_holiday_in_cell)
-                        else ""
-                    ),
+                    (holiday.name if holiday else ""),
                     dict(
                         x=x + cell_width / FONT_SIZE_FACTOR,
                         y=y + cell_height * (1 - 1 / FONT_SIZE_FACTOR),
@@ -139,18 +139,18 @@ class CalendarGridSVGRenderer:
                     self.time_start_table.ut + i_row * self.row_unit.seconds
                 )
                 str_time = self.time_format_row_header.format(time_row)
-                holiday = Holidays.get_holiday(time_row)
-                str_holiday = (
-                    holiday.name
-                    if holiday and not self.show_holiday_in_cell
-                    else ""
+                holiday = (
+                    Holidays.get_holiday(time_row)
+                    if not self.show_holiday_in_cell
+                    else None
                 )
+
                 inner.append(
                     self.render_header_cell(
                         (offset_x + 0.5) * self.cell_width,
                         (i_row + 1 + 0.5) * self.cell_height,
                         str_time,
-                        str_holiday,
+                        holiday.name if holiday else "",
                     )
                 )
 

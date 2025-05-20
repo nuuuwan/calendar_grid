@@ -15,11 +15,15 @@ class CalendarGridBase:
 
     @property
     def offset(self):
-        if self.row_unit == TimeUnit.DAY:
+        if self.row_unit.seconds <= TimeUnit.DAY.seconds:
             return TimeZoneOffset.LK
-        if self.row_unit == TimeUnit.WEEK:
-            return TimeZoneOffset.LK + TimeUnit.SECONDS_IN.DAY * 4
-        raise ValueError(f"Invalid row unit {self.row_unit}.")
+        if self.row_unit.seconds > TimeUnit.WEEK.seconds:
+            return (
+                math.floor(self.time_start.ut / TimeUnit.WEEK.seconds)
+                * TimeUnit.WEEK.seconds
+            )
+
+        return TimeZoneOffset.LK + TimeUnit.SECONDS_IN.DAY * 4
 
     @property
     def time_start_table(self) -> Time:
@@ -57,10 +61,11 @@ class CalendarGridBase:
 
     @property
     def time_format_title(self) -> TimeFormat:
-        if self.time_delta_table.dut > TimeUnit.SECONDS_IN.WEEK:
-            return TimeFormat("%Y %b")
-        if self.time_delta_table.dut > TimeUnit.SECONDS_IN.DAY:
+        if self.time_delta_table.dut < TimeUnit.SECONDS_IN.DAY:
             return TimeFormat("%Y-%m-%d")
+        if self.time_delta_table.dut < TimeUnit.SECONDS_IN.WEEK * 52:
+            return TimeFormat("%Y %b")
+        return TimeFormat("%Y")
 
     @property
     def time_format_row_header(self) -> TimeFormat:
@@ -68,15 +73,15 @@ class CalendarGridBase:
             return TimeFormat("%a %d")
         if self.row_unit == TimeUnit.WEEK:
             return TimeFormat("week %W")
-        return TimeFormat.TIME_ID
+        return ""
 
     @property
     def time_format_col_header(self) -> TimeFormat:
         if self.cell_unit.seconds < TimeUnit.DAY.seconds:
             return TimeFormat("%I%p")
-        if self.cell_unit == TimeUnit.DAY:
+        if self.cell_unit.seconds == TimeUnit.DAY.seconds:
             return TimeFormat("%a")
-        return TimeFormat.TIME_ID
+        return TimeFormat("")
 
     @property
     def time_format_cell(self) -> TimeFormat:
@@ -84,8 +89,8 @@ class CalendarGridBase:
             return TimeFormat("")
         if self.cell_unit == TimeUnit.DAY:
             return TimeFormat("%d")
-        return TimeFormat.TIME_ID
+        return TimeFormat("%b %d (Week %W)")
 
     @property
     def show_holiday_in_cell(self) -> bool:
-        return self.cell_unit.seconds >= TimeUnit.SECONDS_IN.DAY
+        return self.cell_unit.seconds == TimeUnit.SECONDS_IN.DAY

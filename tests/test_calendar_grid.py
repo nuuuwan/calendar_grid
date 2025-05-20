@@ -18,6 +18,33 @@ TEST_CG_MONTH = CalendarGrid(
     row_unit=TimeUnit.WEEK,
     cell_unit=TimeUnit.DAY,
 )
+TEST_CG_QUARTER_BY_WEEK = CalendarGrid(
+    time_start=TimeFormat.DATE.parse("2025-04-01"),
+    time_end=TimeFormat.DATE.parse("2025-06-30"),
+    row_unit=TimeUnit(TimeUnit.WEEK.seconds * 4),
+    cell_unit=TimeUnit.WEEK,
+)
+
+TEST_CG_YEAR_BY_WEEK = CalendarGrid(
+    time_start=TimeFormat.DATE.parse("2025-01-01"),
+    time_end=TimeFormat.DATE.parse("2025-12-31"),
+    row_unit=TimeUnit(TimeUnit.WEEK.seconds * 13),
+    cell_unit=TimeUnit.WEEK,
+)
+TEST_CG_YEAR_BY_WEEK4 = CalendarGrid(
+    time_start=TimeFormat.DATE.parse("2025-01-01"),
+    time_end=TimeFormat.DATE.parse("2025-12-31"),
+    row_unit=TimeUnit(TimeUnit.WEEK.seconds * 12),
+    cell_unit=TimeUnit(TimeUnit.WEEK.seconds * 4),
+)
+
+LIST_TEST_CG = [
+    TEST_CG_WEEK,
+    TEST_CG_MONTH,
+    TEST_CG_QUARTER_BY_WEEK,
+    TEST_CG_YEAR_BY_WEEK,
+    TEST_CG_YEAR_BY_WEEK4,
+]
 
 
 class TestCase(unittest.TestCase):
@@ -28,6 +55,7 @@ class TestCase(unittest.TestCase):
         os.makedirs("images", exist_ok=True)
 
     def test_write(self):
-        for test_cg in [TEST_CG_WEEK, TEST_CG_MONTH]:
+        self.before()
+        for test_cg in LIST_TEST_CG:
             test_cg.write()
             self.assertTrue(os.path.exists(test_cg.svg_file_path))
