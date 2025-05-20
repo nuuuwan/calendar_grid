@@ -22,6 +22,22 @@ class CalendarGridSVGRenderer:
             ),
         )
 
+    @staticmethod
+    def render_table_cell(x, y, cell_width, cell_height):
+        return _(
+            "rect",
+            None,
+            dict(
+                x=x,
+                y=y,
+                width=cell_width,
+                height=cell_height,
+                fill="none",
+                stroke="#000",
+                stroke_width=0.1,
+            ),
+        )
+
     @property
     def svg_inner_table(self):
         g = []
@@ -32,18 +48,11 @@ class CalendarGridSVGRenderer:
                 x = i_col * cell_width
                 y = i_row * cell_height
                 g.append(
-                    _(
-                        "rect",
-                        None,
-                        dict(
-                            x=x,
-                            y=y,
-                            width=cell_width,
-                            height=cell_height,
-                            fill="#fff",
-                            stroke="#000",
-                            stroke_width=0.5,
-                        ),
+                    self.render_table_cell(
+                        x,
+                        y,
+                        cell_width,
+                        cell_height,
                     )
                 )
         PADDING = 10
@@ -67,9 +76,9 @@ class CalendarGridSVGRenderer:
             dict(
                 x=0,
                 y=0,
-                width="100",
-                height="100",
-                fill="#f004",
+                width=100,
+                height=100,
+                fill="#8881",
             ),
         )
 
