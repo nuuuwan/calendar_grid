@@ -89,7 +89,7 @@ class CalendarGridSVGRenderer:
             dict(
                 x=x,
                 y=y,
-                font_size=2,
+                font_size=10 / max(5, len(text)),
                 text_anchor="middle",
                 dominant_baseline="middle",
                 fill="#000",

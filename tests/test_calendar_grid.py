@@ -1,13 +1,13 @@
 import os
 import unittest
-
+import shutil
 from utils import TimeFormat, TimeUnit
 
 from calendar_grid import CalendarGrid
 
 TEST_CG_WEEK = CalendarGrid(
-    time_start=TimeFormat.DATE.parse("2025-05-19"),
-    time_end=TimeFormat.DATE.parse("2025-05-25"),
+    time_start=TimeFormat.DATE.parse("2025-05-12"),
+    time_end=TimeFormat.DATE.parse("2025-05-18"),
     row_unit=TimeUnit.DAY,
     cell_unit=TimeUnit.HOUR * 2,
 )
@@ -21,6 +21,11 @@ TEST_CG_MONTH = CalendarGrid(
 
 
 class TestCase(unittest.TestCase):
+
+    def before(self):
+        if os.path.exists("images"):
+            shutil.rmtree("images")
+        os.makedirs("images", exist_ok=True)
 
     def test_write(self):
         for test_cg in [TEST_CG_WEEK, TEST_CG_MONTH]:
