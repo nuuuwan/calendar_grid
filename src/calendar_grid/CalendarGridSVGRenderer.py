@@ -1,12 +1,13 @@
 import os
 
 from utils import Log, TimeFormat, _, Time
+from calendar_grid.Holidays import Holidays
 
 log = Log("CalendarGridSVGRenderer")
 
 
 class CalendarGridSVGRenderer:
-    PADDING = 10
+    PADDING = 2
 
     @property
     def svg_file_path(self):
@@ -42,11 +43,11 @@ class CalendarGridSVGRenderer:
             + i_col * self.cell_unit.seconds
         )
 
-        if (
-            time_cell.ut < self.time_start.ut
-            or time_cell.ut > self.time_end.ut
-        ):
+        if time_cell.ut < self.time_start.ut or time_cell.ut > self.time_end.ut:
             return None
+
+        holiday = Holidays.get_holiday(time_cell)
+        fill = "none" if holiday is None else "#eee8"
 
         FONT_SIZE_FACTOR = 10
 
@@ -61,7 +62,7 @@ class CalendarGridSVGRenderer:
                         y=y,
                         width=cell_width,
                         height=cell_height,
-                        fill="none",
+                        fill=fill,
                         stroke="#000",
                         stroke_width=0.1,
                     ),
@@ -178,7 +179,9 @@ class CalendarGridSVGRenderer:
                 y=0,
                 width=100,
                 height=100,
-                fill="#8881",
+                fill="#fff",
+                stroke="#000",
+                stroke_width=0.1,
             ),
         )
 
@@ -203,8 +206,8 @@ class CalendarGridSVGRenderer:
             self.title,
             dict(
                 x=50,
-                y=self.PADDING,
-                font_size=100 / max(20, len(self.title)),
+                y=self.PADDING * 1.5,
+                font_size=100 / max(30, len(self.title)),
                 text_anchor="middle",
                 dominant_baseline="middle",
                 fill="#000",
