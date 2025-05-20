@@ -69,3 +69,11 @@ class CalendarGridBase:
         if self.cell_unit == TimeUnit.DAY:
             return TimeFormat("%a")
         return TimeFormat.TIME_ID
+
+    @property
+    def time_format_cell(self) -> TimeFormat:
+        if self.cell_unit in [TimeUnit.HOUR, TimeUnit.HOUR * 2]:
+            return TimeFormat("")
+        if self.cell_unit == TimeUnit.DAY:
+            return TimeFormat("%d")
+        return TimeFormat.TIME_ID

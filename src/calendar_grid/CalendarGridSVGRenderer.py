@@ -32,23 +32,48 @@ class CalendarGridSVGRenderer:
     def cell_height(self):
         return 100 / (self.n_rows + 2)
 
-    def render_table_cell(self, i_col, i_row, cell_width, cell_height):
+    def render_cell(self, i_col, i_row, cell_width, cell_height):
 
         x = (i_col + 1) * self.cell_width
         y = (i_row + 1) * self.cell_height
 
+        FONT_SIZE_FACTOR = 10
+
         return _(
-            "rect",
-            None,
-            dict(
-                x=x,
-                y=y,
-                width=cell_width,
-                height=cell_height,
-                fill="none",
-                stroke="#000",
-                stroke_width=0.1,
-            ),
+            "g",
+            [
+                _(
+                    "rect",
+                    None,
+                    dict(
+                        x=x,
+                        y=y,
+                        width=cell_width,
+                        height=cell_height,
+                        fill="none",
+                        stroke="#000",
+                        stroke_width=0.1,
+                    ),
+                ),
+                _(
+                    "text",
+                    self.time_format_cell.format(
+                        Time(
+                            self.time_start_table.ut
+                            + i_row * self.row_unit.seconds
+                            + i_col * self.cell_unit.seconds
+                        )
+                    ),
+                    dict(
+                        x=x + cell_width / FONT_SIZE_FACTOR,
+                        y=y + cell_height / FONT_SIZE_FACTOR,
+                        font_size=cell_width / FONT_SIZE_FACTOR,
+                        text_anchor="middle",
+                        dominant_baseline="middle",
+                        fill="#000",
+                    ),
+                ),
+            ],
         )
 
     def render_header_cell(self, x, y, text):
@@ -118,7 +143,7 @@ class CalendarGridSVGRenderer:
             for i_col in range(self.n_cols):
 
                 inner.append(
-                    self.render_table_cell(
+                    self.render_cell(
                         i_col,
                         i_row,
                         self.cell_width,
