@@ -7,15 +7,15 @@ from calendar_grid import CalendarGrid
 
 TEST_CG_WEEK = CalendarGrid(
     time_start=TimeFormat.DATE.parse("2025-05-19"),
+    time_end=TimeFormat.DATE.parse("2025-05-26"),
     row_unit=TimeUnit.DAY,
-    n_rows=7,
     cell_unit=TimeUnit.HOUR * 2,
 )
 
 TEST_CG_MONTH = CalendarGrid(
-    time_start=TimeFormat.DATE.parse("2025-06-01"),
+    time_start=TimeFormat.DATE.parse("2025-05-01"),
+    time_end=TimeFormat.DATE.parse("2025-06-01"),
     row_unit=TimeUnit.WEEK,
-    n_rows=5,
     cell_unit=TimeUnit.DAY,
 )
 

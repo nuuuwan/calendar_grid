@@ -9,8 +9,8 @@ log = Log("CalendarGrid")
 @dataclass
 class CalendarGridBase:
     time_start: Time
+    time_end: Time
     row_unit: TimeUnit
-    n_rows: Time
     cell_unit: TimeUnit
 
     @property
@@ -32,20 +32,20 @@ class CalendarGridBase:
         )
 
     @property
-    def time_end(self) -> Time:
-        return Time(
-            self.time_start.ut + (self.n_rows - 1) * self.row_unit.seconds
-        )
-
-    @property
     def time_end_table(self) -> Time:
         return Time(
-            self.time_start_table.ut + self.n_rows * self.row_unit.seconds
+            math.ceil((self.time_end.ut - self.offset) / self.row_unit.seconds)
+            * self.row_unit.seconds
+            + self.offset,
         )
 
     @property
     def time_delta_table(self) -> TimeDelta:
         return self.time_end_table - self.time_start_table
+
+    @property
+    def n_rows(self) -> int:
+        return int(self.time_delta_table.dut // self.row_unit.seconds)
 
     @property
     def n_cells(self) -> int:
