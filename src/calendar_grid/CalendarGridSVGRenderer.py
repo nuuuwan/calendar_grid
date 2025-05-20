@@ -83,18 +83,44 @@ class CalendarGridSVGRenderer:
         )
 
     @property
+    def title(self):
+        return " to ".join(
+            [
+                TimeFormat.TIME.format(self.time_start),
+                TimeFormat.TIME.format(self.time_end),
+            ]
+        )
+
+    @property
+    def svg_title(self):
+        return _(
+            "text",
+            self.title,
+            dict(
+                x=50,
+                y=5,
+                font_size=100 / len(self.title),
+                text_anchor="middle",
+                dominant_baseline="middle",
+                fill="#000",
+            ),
+        )
+
+    @property
     def svg(self):
         return _(
             "svg",
             [
                 self.svg_inner_table,
+                self.svg_title,
                 self.svg_rect_border,
             ],
             dict(
-                width=3400 * 0.5,
-                height=2400 * 0.5,
+                width=1440,
+                height=1080,
                 viewBox="0 0 100 100",
                 preserveAspectRatio="none",
+                font_family="Consolas",
             ),
         )
 

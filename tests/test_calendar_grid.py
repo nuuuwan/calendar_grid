@@ -1,13 +1,13 @@
 import os
 import unittest
 
-from utils import Time, TimeDelta, TimeUnit
+from utils import TimeFormat, TimeUnit
 
 from calendar_grid import CalendarGrid
 
 TEST_CG = CalendarGrid(
-    time_start=Time.now(),
-    time_end=Time.now() + TimeDelta(TimeUnit.SECONDS_IN.WEEK),
+    time_start=TimeFormat.DATE.parse("2025-05-20"),
+    time_end=TimeFormat.DATE.parse("2025-05-27"),
     cell_unit=TimeUnit.HOUR * 2,
     row_unit=TimeUnit.DAY,
 )
